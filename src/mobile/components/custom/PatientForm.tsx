@@ -89,7 +89,7 @@ export default function PatientForm() {
                             <SelectDragIndicator />
                         </SelectDragIndicatorWrapper>
                         {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((c) => (
-                            <SelectItem key={c} label={`${c}`} value={`${c}`}>
+                            <SelectItem className='flex flex-row items-center justify-center' key={c} label={`${c}`} value={`${c}`}>
                                 {c}
                             </SelectItem>
                         ))}
