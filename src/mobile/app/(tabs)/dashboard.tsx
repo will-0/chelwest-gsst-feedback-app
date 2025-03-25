@@ -1,14 +1,12 @@
 import BaseView from '@/components/BaseView';
-import PatientForm from '@/components/custom/PatientForm';
+import PatientCard from '@/components/custom/PatientCard';
 import { Box } from '@/components/ui/box';
 import { Heading } from '@/components/ui/heading';
 import { SearchIcon } from '@/components/ui/icon';
 import { Input, InputField, InputIcon, InputSlot } from '@/components/ui/input';
-import { Select } from '@/components/ui/select';
 import { useGetPatientsQuery } from '@/state/api';
 import { useState } from 'react';
 import { ScrollView } from 'react-native';
-import { SearchBar } from 'react-native-screens';
 
 export default function HomeScreen() {
 
@@ -40,21 +38,7 @@ export default function HomeScreen() {
                   return value;
                 }
               }).map((patient, index) => (
-                <Box key={index} className='w-full p-4 bg-secondary-300 rounded-lg'>
-                  <Heading size='lg' className='mb-2'>{patient.mrn}</Heading>
-                  <Box className='flex flex-row justify-between items-center'>
-                    <Heading size='md'>Ratings</Heading>
-                    <Box className='flex flex-row'>
-                      {
-                        isSuccess && patient.ratings.map((rating, index) => (
-                          <Box key={index} className='bg-gray-200 rounded-full h-6 w-6 flex items-center justify-center mx-1'>
-                            <Heading size='sm'>{rating.rating}</Heading>
-                          </Box>
-                        ))
-                      }
-                    </Box>
-                  </Box>
-                </Box>
+                PatientCard(index, patient, isSuccess)
               ))
             }
           </Box>
