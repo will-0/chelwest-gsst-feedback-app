@@ -8,6 +8,7 @@ import { Select, SelectTrigger, SelectInput, SelectIcon, SelectPortal, SelectBac
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ChevronDownIcon } from '@/components/ui/icon';
 import { Toast, ToastDescription, ToastTitle, useToast } from '@/components/ui/toast';
+import { userId } from '@/constants/dev';
 
 export default function PatientForm() {
     const [mrn, setMrn] = useState<string | undefined>(undefined);
@@ -51,7 +52,7 @@ export default function PatientForm() {
                     mrn,
                     ratings: [{
                         rating: rating,
-                        rater: 12345,
+                        rater: userId,
                         is_consultant: false,
                     }]
                 };
