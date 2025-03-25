@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { VStack } from '@/components/ui/vstack';
 import { Input, InputField } from '@/components/ui/input';
 import { Text } from '@/components/ui/text';
@@ -9,35 +9,35 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ChevronDownIcon } from '../ui/icon';
 
 export default function PatientForm() {
-    const [mrn, setMrn] = useState('');
-    const [rating, setRating] = useState('');
-    const [rater, setRater] = useState('');
-    const [isConsultant, setIsConsultant] = useState<boolean | null>(null);
+    const [mrn, setMrn] = useState<string | null>(null);
+    const [rating, setRating] = useState<number | null>(null);
 
     const [addPatient, { isLoading, isSuccess, isError }] = useCreatePatientMutation();
     const safeInsets = useSafeAreaInsets();
 
     const handleSubmit = async () => {
-        if (mrn && rating && rater && isConsultant !== null) {
+        if (mrn && rating !== null) {
             try {
                 const newPatient: Patient = {
                     mrn,
                     ratings: [{
-                        rating: parseInt(rating),
-                        rater: parseInt(rater),
-                        is_consultant: isConsultant,
+                        rating: rating,
+                        rater: 12345,
+                        is_consultant: false,
                     }]
                 };
                 await addPatient(newPatient).unwrap();
-                setMrn('');
-                setRating('');
-                setRater('');
-                setIsConsultant(null);
+                setMrn(null);
+                setRating(null);
             } catch (e) {
                 console.error('Submission failed', e);
             }
         }
     };
+
+    useEffect(() => {
+        console.log(mrn, rating);
+    }, [mrn, rating]);
 
     return (
         <VStack className='p-8 w-full gap-4 items-center'>
@@ -47,9 +47,9 @@ export default function PatientForm() {
                     onChangeText={setMrn}
                 />
             </Input>
-            <Select className="w-full" onValueChange={setRating}>
+            <Select className="w-full" onValueChange={(rating) => setRating(parseInt(rating))}>
                 <SelectTrigger variant="outline" size="md" >
-                    <SelectInput className='flex-1' placeholder="Select option" />
+                    <SelectInput className='flex-1' placeholder="Add Rating" />
                     <SelectIcon className="mr-3" as={ChevronDownIcon} />
                 </SelectTrigger>
                 <SelectPortal>
@@ -70,7 +70,7 @@ export default function PatientForm() {
             <Button
                 className='bg-primary-400'
                 onPress={handleSubmit}
-                isDisabled={!mrn || !rating || !rater || isConsultant === null}
+                isDisabled={!mrn || !rating === null}
             >
                 <Text className='text-typography-0'>
                     {isLoading ? 'Submitting...' : 'Submit'}
