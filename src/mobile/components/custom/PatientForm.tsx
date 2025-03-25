@@ -10,10 +10,11 @@ import { ChevronDownIcon } from '@/components/ui/icon';
 import { Toast, ToastDescription, ToastTitle, useToast } from '@/components/ui/toast';
 
 export default function PatientForm() {
-    const [mrn, setMrn] = useState<string | null>(null);
-    const [rating, setRating] = useState<number | null>(null);
+    const [mrn, setMrn] = useState<string | undefined>(undefined);
+    const [rating, setRating] = useState<number | undefined>(undefined);
+    const [clearFormToggle, setClearFormToggle] = useState<number>(0);
 
-    const [addPatient, { isLoading, isSuccess, isError }] = useCreatePatientMutation();
+    const [addPatient, { isLoading }] = useCreatePatientMutation();
     const safeInsets = useSafeAreaInsets();
     const toast = useToast()
     const [toastId, setToastId] = React.useState("0")
@@ -44,7 +45,7 @@ export default function PatientForm() {
     }
 
     const handleSubmit = async () => {
-        if (mrn && rating !== null) {
+        if (mrn && rating !== undefined) {
             try {
                 const newPatient: Patient = {
                     mrn,
@@ -55,9 +56,10 @@ export default function PatientForm() {
                     }]
                 };
                 await addPatient(newPatient).unwrap();
-                setMrn(null);
-                setRating(null);
+                setMrn(undefined);
+                setRating(undefined);
                 handleToast("Patient added!")
+                clearFormToggle === 0 ? setClearFormToggle(1) : setClearFormToggle(0);
             } catch (e) {
                 console.error('Submission failed', e);
                 handleToast("Failed to add patient")
@@ -69,11 +71,12 @@ export default function PatientForm() {
         <VStack className='p-8 w-full gap-4 items-center'>
             <Input>
                 <InputField
+                    value={mrn}
                     placeholder="Enter MRN"
                     onChangeText={setMrn}
                 />
             </Input>
-            <Select className="w-full" onValueChange={(rating) => setRating(parseInt(rating))}>
+            <Select key={clearFormToggle} className="w-full" onValueChange={(rating) => setRating(parseInt(rating))}>
                 <SelectTrigger variant="outline" size="md" >
                     <SelectInput className='flex-1' placeholder="Add Rating" />
                     <SelectIcon className="mr-3" as={ChevronDownIcon} />
@@ -96,7 +99,7 @@ export default function PatientForm() {
             <Button
                 className='bg-primary-400'
                 onPress={handleSubmit}
-                isDisabled={!mrn || !rating === null}
+                isDisabled={(mrn === undefined) || (rating === undefined) || isLoading}
             >
                 <Text className='text-typography-0'>
                     {isLoading ? 'Submitting...' : 'Submit'}
