@@ -6,7 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Patient, useCreatePatientMutation } from '@/state/api';
 import { Select, SelectTrigger, SelectInput, SelectIcon, SelectPortal, SelectBackdrop, SelectContent, SelectDragIndicator, SelectDragIndicatorWrapper, SelectItem } from "@/components/ui/select";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { ChevronDownIcon } from '../ui/icon';
+import { ChevronDownIcon } from '@/components/ui/icon';
+import { Toast, ToastDescription, ToastTitle, useToast } from '@/components/ui/toast';
 
 export default function PatientForm() {
     const [mrn, setMrn] = useState<string | null>(null);
@@ -14,6 +15,33 @@ export default function PatientForm() {
 
     const [addPatient, { isLoading, isSuccess, isError }] = useCreatePatientMutation();
     const safeInsets = useSafeAreaInsets();
+    const toast = useToast()
+    const [toastId, setToastId] = React.useState("0")
+    const handleToast = (message: string) => {
+      if (!toast.isActive(toastId)) {
+        showNewToast(message)
+      }
+    }
+    const showNewToast = (message: string) => {
+      const newId = `${Math.random()}`
+      setToastId(newId)
+      toast.show({
+        id: newId,
+        placement: "top",
+        duration: 3000,
+        render: ({ id }: {id: string}) => {
+          const uniqueToastId = "toast-" + id
+          return (
+            <Toast nativeID={uniqueToastId} action="muted" variant="solid">
+              <ToastTitle>Message</ToastTitle>
+              <ToastDescription>
+                {message}
+              </ToastDescription>
+            </Toast>
+          )
+        },
+      })
+    }
 
     const handleSubmit = async () => {
         if (mrn && rating !== null) {
@@ -29,8 +57,10 @@ export default function PatientForm() {
                 await addPatient(newPatient).unwrap();
                 setMrn(null);
                 setRating(null);
+                handleToast("Patient added!")
             } catch (e) {
                 console.error('Submission failed', e);
+                handleToast("Failed to add patient")
             }
         }
     };
@@ -72,14 +102,6 @@ export default function PatientForm() {
                     {isLoading ? 'Submitting...' : 'Submit'}
                 </Text>
             </Button>
-
-            {
-                isSuccess ?
-                    <Text>Patient added!</Text>
-                    : isError ?
-                        <Text>Something went wrong.</Text>
-                        : <Text></Text>
-            }
         </VStack>
     );
 }
