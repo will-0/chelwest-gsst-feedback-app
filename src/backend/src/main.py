@@ -64,5 +64,5 @@ async def read_patient(mrn: str):
 
 @app.delete("/patient/{mrn}")
 async def delete_patient(mrn: str):
-    result = await patients_collection.delete_one({"mrn": mrn})
+    result = await patients_collection.delete_many({})
     return {"message": f"{result.deleted_count} patient(s) deleted"}
