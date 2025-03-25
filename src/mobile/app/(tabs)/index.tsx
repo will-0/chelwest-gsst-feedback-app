@@ -7,7 +7,7 @@ export default function HomeScreen() {
   return (
     <BaseView>
       <Box className='flex-1 justify-center items-center w-full'>
-        <Heading size="2xl">Welcome, Will</Heading>
+        <Heading size="2xl">Add Patient Rating</Heading>
         <PatientForm  />
       </Box>
     </BaseView>
