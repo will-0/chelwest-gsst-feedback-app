@@ -1,4 +1,4 @@
-# Will React Native App Template
+# Chelwest / GSST Feedback App
 
 ## Installation
 
