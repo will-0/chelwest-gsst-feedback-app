@@ -31,9 +31,7 @@ export default function HomeScreen() {
                 else if (value.mrn.toLowerCase().startsWith(search.toLowerCase())) {
                   return value;
                 }
-              }).map((patient, index) => (
-                PatientCard(index, patient, isSuccess)
-              ))
+              }).map((patient, index) => <PatientCard key={index} index={index} patient={patient} isSuccess={isSuccess} />)
             }
           </Box>
         </ScrollView>
