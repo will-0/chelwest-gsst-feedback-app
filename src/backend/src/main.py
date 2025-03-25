@@ -43,14 +43,18 @@ class Patient(BaseModel):
     mrn: str
     ratings: List[Rating]
 
+@app.post("/patient", status_code=status.HTTP_201_CREATED)
+async def create_patient(patient: Patient):
+    await patients_collection.insert_one(patient.model_dump())
+    return patient
 
-@app.get("/patients")
+@app.get("/patient")
 async def read_patients():
     patients = await patients_collection.find({}).to_list(length=None)
     return [Patient(**patient) for patient in patients]
 
 
-@app.get("/patients/{mrn}")
+@app.get("/patient/{mrn}")
 async def read_patient(mrn: str):
     patient = await patients_collection.find_one({"mrn": mrn})
     if patient:
@@ -58,13 +62,7 @@ async def read_patient(mrn: str):
     return {"error": "Patient not found"}
 
 
-@app.post("/patients", status_code=status.HTTP_201_CREATED)
-async def create_patient(patient: Patient):
-    await patients_collection.insert_one(patient.dict())
-    return patient
-
-
-@app.delete("/patients/{mrn}")
+@app.delete("/patient/{mrn}")
 async def delete_patient(mrn: str):
     result = await patients_collection.delete_one({"mrn": mrn})
     return {"message": f"{result.deleted_count} patient(s) deleted"}
