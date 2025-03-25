@@ -35,10 +35,6 @@ export default function PatientForm() {
         }
     };
 
-    useEffect(() => {
-        console.log(mrn, rating);
-    }, [mrn, rating]);
-
     return (
         <VStack className='p-8 w-full gap-4 items-center'>
             <Input>
