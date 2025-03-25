@@ -20,17 +20,17 @@ export default function PatientCard({ index, patient, isSuccess }: PatientCardPr
         <Box key={index} className='p-4 bg-secondary-200 rounded-lg shadow-sm shadow-secondary-500 flex flex-row justify-between items-center'>
             <Heading size='md'>MRN: {patient.mrn}</Heading>
             <Box className='flex flex-row gap-1'>
+                {
+                    consRating !== undefined &&
+                    <Badge className='rounded-lg bg-green-200' size="lg" variant="solid" action="muted">
+                        <BadgeText>{consRating}</BadgeText>
+                        <BadgeIcon as={CheckIcon} className="ml-2" />
+                    </Badge>
+                }
                 <Badge className='rounded-lg bg-orange-200' size="lg" variant="solid" action="muted">
                     <BadgeText>{yourRating}</BadgeText>
                     <BadgeIcon as={MessageCircleIcon} className="ml-2" />
                 </Badge>
-                {
-                    consRating !== undefined &&
-                    <Badge className='rounded-lg bg-green-200' size="lg" variant="solid" action="muted">
-                        <BadgeText>{yourRating}</BadgeText>
-                        <BadgeIcon as={CheckIcon} className="ml-2" />
-                    </Badge>
-                }
             </Box>
         </Box>
     );
