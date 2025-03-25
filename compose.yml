@@ -1,0 +1,26 @@
+# Finomics Mobile Backend relies on the following dependencies:
+# - nhs-gws-lib
+# - nhs-pay
+
+services:
+  backend:
+    container_name: backend
+    build:
+      context: ./src/backend
+      dockerfile: Dockerfile
+    volumes:
+      - ./src/backend:/app
+    ports:
+      - "5175:80"
+      - "5678:5678" # Expose debugpy port for remote debugging
+    environment:
+      - DEBUGPY_ENABLED=true # Enable debugpy
+    
+  db:
+    image: mongo:5.0
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./local/db/data/mongo:/data/db
+    command: mongod --quiet --logpath /dev/null
