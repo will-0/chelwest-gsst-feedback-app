@@ -1,25 +1,21 @@
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import HTTPException, status
 from pydantic import BaseModel
 import debugpy
 from typing import List
 
+from .database.mongo import patients_collection
+from .auth import auth_user
+
 # Enable debugpy listener
 if os.getenv("DEBUGPY_ENABLED", "true").lower() == "true":
     print("Starting Debugpy...")
     debugpy.listen(("0.0.0.0", 5678))
 
-app = FastAPI()
-
-MONGO_DETAILS = "mongodb://db:27017"
-client = AsyncIOMotorClient(MONGO_DETAILS)
-db = client["fruits_db"]  # Database name
-
-# Collections for payslips and contracts
-patients_collection = db.get_collection("patients")
+app = FastAPI(dependencies=[Depends(auth_user)])
 
 origins = [
     "http://localhost",

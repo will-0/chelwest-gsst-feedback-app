@@ -15,7 +15,7 @@ export default function TabLayout() {
 
   return (
     <Tabs
-      initialRouteName="index"
+      initialRouteName="add"
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
@@ -30,7 +30,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="index"
+        name="add"
         options={{
           title: 'Add',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="plus.square" color={color} />,

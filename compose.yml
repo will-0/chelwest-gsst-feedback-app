@@ -1,7 +1,3 @@
-# Finomics Mobile Backend relies on the following dependencies:
-# - nhs-gws-lib
-# - nhs-pay
-
 services:
   backend:
     container_name: backend
@@ -11,16 +7,29 @@ services:
     volumes:
       - ./src/backend:/app
     ports:
-      - "5175:80"
-      - "5678:5678" # Expose debugpy port for remote debugging
-    environment:
-      - DEBUGPY_ENABLED=true # Enable debugpy
+      - "${LOCALHOST_PORT_BACKEND}:80"
+      - "${LOCALHOST_PORT_DEBUGPY}:5678" # Expose debugpy port for remote debugging
+    env_file:
+      - .env.dev
+    depends_on:
+      - mock-oauth2-server
     
   db:
     image: mongo:5.0
     container_name: mongo
     ports:
-      - "27017:27017"
+      - "${LOCALHOST_PORT_MONGO}:27017"
     volumes:
       - ./local/db/data/mongo:/data/db
     command: mongod --quiet --logpath /dev/null
+
+  mock-oauth2-server:
+    image: ghcr.io/navikt/mock-oauth2-server:2.1.10
+    ports:
+      - "${LOCALHOST_PORT_AUTHSERVER}:8080"
+    volumes:
+      - ./local/auth/config-ssl.json:/app/config.json
+    environment:
+      LOG_LEVEL: "debug"
+      SERVER_PORT: 8080
+      JSON_CONFIG_PATH: /app/config.json

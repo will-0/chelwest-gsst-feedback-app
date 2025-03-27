@@ -1,4 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import * as SecureStore from 'expo-secure-store';
+import { ACCESS_TOKEN_KEY } from '@/constants/StorageKeys';
 
 export interface Rating {
   rating: number;
@@ -13,7 +15,16 @@ export interface Patient {
 
 export const patientsApi = createApi({
   reducerPath: "api",
-  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:5175/" }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: "http://localhost:5175/",
+    prepareHeaders: async (headers) => {
+      const token = await SecureStore.getItemAsync(ACCESS_TOKEN_KEY);
+      if (token) {
+        headers.set("Authorization", `Bearer ${token}`);
+      }
+      return headers;
+    },
+  }),
   tagTypes: ["Patients"],
   endpoints: (builder) => ({
     // GET all patients
