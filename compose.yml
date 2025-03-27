@@ -10,7 +10,7 @@ services:
       - "${LOCALHOST_PORT_BACKEND}:80"
       - "${LOCALHOST_PORT_DEBUGPY}:5678" # Expose debugpy port for remote debugging
     env_file:
-      - .env.dev
+      - .env
     depends_on:
       - mock-oauth2-server
     
