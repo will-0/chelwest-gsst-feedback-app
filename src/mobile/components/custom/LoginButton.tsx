@@ -51,8 +51,13 @@ export default function LoginButton({ auth_endpoint, token_endpoint, client_id, 
                     ).then(async (res) => {
                         if (Platform.OS !== 'web') {
                             // Securely store the auth on your device
-                            await SecureStore.setItemAsync(ACCESS_TOKEN_KEY, res.accessToken)
-                            setIsLoggedIn && setIsLoggedIn(true);
+                            console.log(res);
+                            if (res.idToken) {
+                                await SecureStore.setItemAsync(ACCESS_TOKEN_KEY, res.idToken)
+                                setIsLoggedIn && setIsLoggedIn(true);
+                            } else {
+                                throw new Error('No idToken found');
+                            }
                         }
                     }).catch((error) => {
                         console.error(error);
