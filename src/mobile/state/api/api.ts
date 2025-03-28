@@ -16,7 +16,7 @@ export interface Patient {
 export const patientsApi = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:5175/",
+    baseUrl: "https://backend.ashybay-faf6a614.uksouth.azurecontainerapps.io/",
     prepareHeaders: async (headers) => {
       const token = await SecureStore.getItemAsync(ACCESS_TOKEN_KEY);
       if (token) {

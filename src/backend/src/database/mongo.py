@@ -1,8 +1,7 @@
 from motor.motor_asyncio import AsyncIOMotorClient
+import os
 
-# SETUP
-_MONGO_DETAILS = "mongodb://db:27017"
-_client = AsyncIOMotorClient(_MONGO_DETAILS)
+_client = AsyncIOMotorClient(os.environ["MONGO_CONNECTION_STRING"])  # Connection URI
 _db = _client["main"]  # Database name
 
 # COLLECTIONS
