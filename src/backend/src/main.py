@@ -15,7 +15,7 @@ if os.getenv("DEBUGPY_ENABLED", "true").lower() == "true":
     print("Starting Debugpy...")
     debugpy.listen(("0.0.0.0", 5678))
 
-app = FastAPI(dependencies=[Depends(auth_user)])
+app = FastAPI()
 
 origins = [
     "http://localhost",
@@ -39,19 +39,23 @@ class Patient(BaseModel):
     mrn: str
     ratings: List[Rating]
 
+@app.get("/")
+async def ping():
+    return "ping"
+
 @app.post("/patient", status_code=status.HTTP_201_CREATED)
-async def create_patient(patient: Patient):
+async def create_patient(patient: Patient, current_user: str = Depends(auth_user)):
     await patients_collection.insert_one(patient.model_dump())
     return patient
 
 @app.get("/patient")
-async def read_patients():
+async def read_patients(current_user: str = Depends(auth_user)):
     patients = await patients_collection.find({}).to_list(length=None)
     return [Patient(**patient) for patient in patients]
 
 
 @app.get("/patient/{mrn}")
-async def read_patient(mrn: str):
+async def read_patient(mrn: str, current_user: str = Depends(auth_user)):
     patient = await patients_collection.find_one({"mrn": mrn})
     if patient:
         return Patient(**patient)
@@ -59,6 +63,6 @@ async def read_patient(mrn: str):
 
 
 @app.delete("/patient/{mrn}")
-async def delete_patient(mrn: str):
+async def delete_patient(mrn: str, current_user: str = Depends(auth_user)):
     result = await patients_collection.delete_many({})
     return {"message": f"{result.deleted_count} patient(s) deleted"}
